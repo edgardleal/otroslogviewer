@@ -176,12 +176,16 @@ public class LogViewMainFrame extends JFrame {
     otrosApplication.setOtrosVfsBrowserDialog(new JOtrosVfsBrowserDialog(getVfsFavoritesConfiguration(), logParsableListener));
     otrosApplication.setServices(new ServicesImpl(otrosApplication));
     otrosApplication.setLogLoader(new BasicLogLoader());
-    SingleInstanceRequestResponseDelegate.getInstance().setOtrosApplication(otrosApplication);
+    if (!runningForTests()){
+      SingleInstanceRequestResponseDelegate.getInstance().setOtrosApplication(otrosApplication);
+    }
     ToolTipManager.sharedInstance().setDismissDelay(5000);
 
     JProgressBar heapBar = new JProgressBar();
     heapBar.setPreferredSize(new Dimension(190, 15));
-    new Thread(new MemoryUsedStatsUpdater(heapBar, 1500), "MemoryUsedUpdater").start();
+    final Thread memoryUsedUpdater = new Thread(new MemoryUsedStatsUpdater(heapBar, 1500), "MemoryUsedUpdater");
+    memoryUsedUpdater.setDaemon(true);
+    memoryUsedUpdater.start();
     JPanel statusPanel = new JPanel(new MigLayout("fill", "[fill, push, grow][right][right]", "[]"));
     statusPanel.add(statusLabel);
     final JButton ideConnectedLabel = new JButton(Ide.IDEA.getIconDiscounted());
@@ -223,7 +227,7 @@ public class LogViewMainFrame extends JFrame {
           + modalDisplayException.getMessage(), "Initialization Error",
         JOptionPane.ERROR_MESSAGE);
 
-    if (!System.getProperty(RUN_FOR_SCENARIO_TEST, "false").equals("true")) {
+    if (!runningForTests()) {
       new TipOfTheDay(c).showTipOfTheDayIfNotDisabled(this);
       Toolkit.getDefaultToolkit().getSystemEventQueue().push(new EventQueueProxy());
       // Check new version on start
@@ -242,6 +246,12 @@ public class LogViewMainFrame extends JFrame {
       new IdeAvailabilityCheck(ideConnectedLabel, otrosApplication.getServices().getJumpToCodeService()),
       25, 25, TimeUnit.SECONDS);
     ideConnectedLabel.addActionListener(new IdeIntegrationConfigAction(otrosApplication));
+  }
+
+  private static boolean runningForTests() {
+    final String runForTest = System.getProperty(RUN_FOR_SCENARIO_TEST, "false");
+    final boolean b = runForTest.equals("true");
+    return b;
   }
 
   private void initInputMap() {
@@ -275,12 +285,14 @@ public class LogViewMainFrame extends JFrame {
       }
       return;
     }
-    SingleInstanceRequestResponseDelegate singleInstanceRequestResponseDelegate = SingleInstanceRequestResponseDelegate.getInstance();
-    SingleInstance singleInstance = SingleInstance.request("OtrosLogViewer", singleInstanceRequestResponseDelegate,
-      singleInstanceRequestResponseDelegate, args);
-    if (singleInstance == null) {
-      LOGGER.info("OtrosLogViewer is already running, params send using requestAction");
-      System.exit(0);
+    if (!runningForTests()){
+      SingleInstanceRequestResponseDelegate singleInstanceRequestResponseDelegate = SingleInstanceRequestResponseDelegate.getInstance();
+      SingleInstance singleInstance = SingleInstance.request("OtrosLogViewer", singleInstanceRequestResponseDelegate,
+        singleInstanceRequestResponseDelegate, args);
+      if (singleInstance == null) {
+        LOGGER.info("OtrosLogViewer is already running, params send using requestAction");
+        System.exit(0);
+      }
     }
 
     LOGGER.info("Starting application");
