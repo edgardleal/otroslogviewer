@@ -17,7 +17,7 @@ public abstract class TestComponent<T extends AbstractComponentFixture, U extend
 
   @SuppressWarnings("unchecked")
   public final U waitFor() {
-    Awaitility.await().until(this::isVisible);
+    Awaitility.await().ignoreExceptions().until(this::isVisible);
     return (U) this;
   }
 

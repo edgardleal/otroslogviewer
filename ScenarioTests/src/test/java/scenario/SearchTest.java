@@ -4,6 +4,7 @@ import org.testng.annotations.Test;
 import scenario.components.LogViewPanel;
 import scenario.components.MainFrame;
 import scenario.components.OpenPanel;
+import scenario.components.WelcomeScreen;
 
 import java.io.File;
 import java.io.IOException;
@@ -61,7 +62,10 @@ public class SearchTest extends OtrosLogViewerBaseTest {
     logEvents(file, count);
 
     final MainFrame mainFrame = new MainFrame(robot());
-    final OpenPanel openPanel = mainFrame.welcomeScreen().clickOpenLogs();
+    final OpenPanel openPanel = mainFrame
+            .welcomeScreen()
+            .waitFor()
+            .clickOpenLogs();
 
     final LogViewPanel logViewPanel = openPanel
       .addFile(file)
