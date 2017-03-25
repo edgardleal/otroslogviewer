@@ -1,21 +1,14 @@
 package scenario;
 
-import org.assertj.swing.launcher.ApplicationLauncher;
-import org.assertj.swing.testng.testcase.AssertJSwingTestngTestCase;
 import org.awaitility.Awaitility;
 import org.testng.annotations.Test;
-import pl.otros.logview.gui.LogViewMainFrame;
 import scenario.components.ConfirmClose;
 import scenario.components.LogViewPanel;
 import scenario.components.MainFrame;
 import scenario.components.OpenPanel;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.FileHandler;
-import java.util.logging.Logger;
-import java.util.stream.IntStream;
 
 
 /**
@@ -27,7 +20,7 @@ import java.util.stream.IntStream;
  * LogViewMainFrame:228 to work faster have to comment this line:
  * //    Toolkit.getDefaultToolkit().getSystemEventQueue().push(new EventQueueProxy());
  */
-public class LogImportTest extends AssertJSwingTestngTestCase {
+public class LogImportTest extends OtrosLogViewerBaseTest {
 
   @Test
   public void testImport1SmallFile() throws Exception {
@@ -124,20 +117,5 @@ public class LogImportTest extends AssertJSwingTestngTestCase {
     mainFrame.welcomeScreen().waitFor();
   }
 
-  private void logEvents(File file, int count) throws IOException {
-    final Logger logger = Logger.getLogger("some logger");
-    logger.setUseParentHandlers(false);
-    logger.addHandler(new FileHandler(file.getAbsolutePath()));
-    IntStream
-      .rangeClosed(1, count)
-      .forEach(i -> logger.info("Message " + i));
-  }
-
-  @Override
-  protected void onSetUp() {
-    System.setProperty("runForScenarioTest", "true");
-
-    ApplicationLauncher.application(LogViewMainFrame.class).start();
-  }
 
 }

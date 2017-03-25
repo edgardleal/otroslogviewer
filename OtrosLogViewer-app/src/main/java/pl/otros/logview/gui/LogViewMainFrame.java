@@ -486,8 +486,9 @@ public class LogViewMainFrame extends JFrame {
   private void initToolbar() {
     toolBar = new JToolBar();
     final JComboBox searchMode = new JComboBox(new String[]{"String contains search: ", "Regex search: ", "Query search: "});
+    searchMode.setName("MainFrame.searchMode");
     searchField = new JTextField();
-
+    searchField.setName("MainFrame.searchField");
     PersistedSuggestionSource searchSuggestionSource = new PersistedSuggestionSource(new SearchSuggestionSource(SearchMode.STRING_CONTAINS), otrosApplication.getServices().getPersistService());
     SuggestDecorator.decorate(
       searchField,
@@ -604,6 +605,7 @@ public class LogViewMainFrame extends JFrame {
     searchMode.setSelectedIndex(selectedSearchMode);
     final JCheckBox markFound = new JCheckBox("Mark search result");
     markFound.setMnemonic(KeyEvent.VK_M);
+    markFound.setName("MainFrame.markFound");
     searchField.addKeyListener(markAllFoundAction);
     configuration.addConfigurationListener(markAllFoundAction);
     JButton markAllFoundButton = new JButton(markAllFoundAction);
@@ -638,8 +640,10 @@ public class LogViewMainFrame extends JFrame {
     });
     markColor.getModel().setSelectedItem(configuration.get(MarkerColors.class, "gui.markColor", MarkerColors.Aqua));
     JButton buttonSearch = new JButton(searchActionForward);
+    buttonSearch.setName("MainFrame.searchNext");
     buttonSearch.setMnemonic(KeyEvent.VK_N);
     JButton buttonSearchPrev = new JButton(searchActionBackward);
+    buttonSearchPrev.setName("MainFrame.searchPrevious");
     buttonSearchPrev.setMnemonic(KeyEvent.VK_P);
     enableDisableComponetsForTabs.addComponet(buttonSearch);
     enableDisableComponetsForTabs.addComponet(buttonSearchPrev);

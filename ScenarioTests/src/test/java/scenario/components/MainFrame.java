@@ -30,4 +30,22 @@ public class MainFrame extends TestComponent<FrameFixture, MainFrame>{
     return new TabBar(me(), robot);
   }
 
+  public MainFrame setSearchModeByString(){
+    me().comboBox("MainFrame.searchMode").selectItem(".*contains.*");
+    return this;
+  }
+  public MainFrame setSearchModeByRegex(){
+    me().comboBox("MainFrame.searchMode").selectItem(".*Regex.*");
+    return this;
+  }
+
+  public MainFrame enterSearchQuery(String query) {
+    me().textBox("MainFrame.searchField").enterText(query);
+    return this;
+  }
+
+  public MainFrame searchNext() {
+    me().button("MainFrame.searchNext").click();
+    return this;
+  }
 }

@@ -43,7 +43,7 @@ public class OpenPanel extends TestComponent<JPanelFixture, OpenPanel> {
   }
 
   public LogViewPanel importFiles() {
-    frame.button("OpenPanel.import").click();
+    await().ignoreExceptions().until(() -> frame.button("OpenPanel.import").click());
     return new LogViewPanel(frame, robot);
   }
 
