@@ -5,6 +5,7 @@ import scenario.components.LogViewPanel;
 import scenario.components.LogsTable;
 import scenario.components.MainFrame;
 import scenario.components.OpenPanel;
+import scenario.components.WelcomeScreen;
 
 import java.io.File;
 import java.io.IOException;
@@ -109,7 +110,10 @@ public class SearchTest extends OtrosLogViewerBaseTest {
     file.deleteOnExit();
 
     final MainFrame mainFrame = new MainFrame(robot());
-    final OpenPanel openPanel = mainFrame.welcomeScreen().clickOpenLogs();
+    final OpenPanel openPanel = mainFrame
+            .welcomeScreen()
+            .waitFor()
+            .clickOpenLogs();
 
     final LogViewPanel logViewPanel = openPanel
       .addFile(file)
