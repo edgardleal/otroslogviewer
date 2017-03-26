@@ -45,6 +45,7 @@ public class LogImportTest extends OtrosLogViewerBaseTest {
     mainFrame.welcomeScreen().waitFor();
   }
 
+
   @Test
   public void testImport2SmallFiles() throws Exception {
     final File file1 = File.createTempFile("otrosTest", "");

@@ -260,7 +260,7 @@ public class LogViewMainFrame extends JFrame {
     String parseClipboard = "parseClipboard";
     final JTextArea jTextArea = new JTextArea();
     final KeyStroke[] keyStrokes = jTextArea.getInputMap().allKeys();
-    Arrays.asList(keyStrokes).forEach(ks -> System.out.println("LogViewMainFrame.initInputMap: " + ks.toString() + " -> " + jTextArea.getInputMap().get(ks)));
+    Arrays.asList(keyStrokes).forEach(ks -> LOGGER.debug("LogViewMainFrame.initInputMap: " + ks.toString() + " -> " + jTextArea.getInputMap().get(ks)));
 
     inputMapInFocusedWindow.put(KeyStroke.getKeyStroke(KeyEvent.VK_V, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), parseClipboard);
     inputMapInFocusedWindow.put(KeyStroke.getKeyStroke(KeyEvent.VK_INSERT, KeyEvent.SHIFT_MASK), parseClipboard);
@@ -484,7 +484,9 @@ public class LogViewMainFrame extends JFrame {
   }
 
   private void initToolbar() {
-    toolBar = new JToolBar();
+    toolBar = new JToolBar(){
+
+    };
     final JComboBox searchMode = new JComboBox(new String[]{"String contains search: ", "Regex search: ", "Query search: "});
     searchMode.setName("MainFrame.searchMode");
     searchField = new JTextField();
@@ -645,13 +647,13 @@ public class LogViewMainFrame extends JFrame {
     JButton buttonSearchPrev = new JButton(searchActionBackward);
     buttonSearchPrev.setName("MainFrame.searchPrevious");
     buttonSearchPrev.setMnemonic(KeyEvent.VK_P);
-    enableDisableComponetsForTabs.addComponet(buttonSearch);
-    enableDisableComponetsForTabs.addComponet(buttonSearchPrev);
-    enableDisableComponetsForTabs.addComponet(searchField);
-    enableDisableComponetsForTabs.addComponet(markFound);
-    enableDisableComponetsForTabs.addComponet(markAllFoundButton);
-    enableDisableComponetsForTabs.addComponet(searchMode);
-    enableDisableComponetsForTabs.addComponet(markColor);
+    enableDisableComponetsForTabs.addComponent(buttonSearch);
+    enableDisableComponetsForTabs.addComponent(buttonSearchPrev);
+    enableDisableComponetsForTabs.addComponent(searchField);
+    enableDisableComponetsForTabs.addComponent(markFound);
+    enableDisableComponetsForTabs.addComponent(markAllFoundButton);
+    enableDisableComponetsForTabs.addComponent(searchMode);
+    enableDisableComponetsForTabs.addComponent(markColor);
     toolBar.add(searchMode);
     toolBar.add(searchField);
     toolBar.add(buttonSearch);
@@ -663,20 +665,26 @@ public class LogViewMainFrame extends JFrame {
     nextMarked.setToolTipText(nextMarked.getText());
     nextMarked.setText("");
     nextMarked.setMnemonic(KeyEvent.VK_E);
-    enableDisableComponetsForTabs.addComponet(nextMarked);
+    enableDisableComponetsForTabs.addComponent(nextMarked);
     toolBar.add(nextMarked);
     JButton prevMarked = new JButton(new JumpToMarkedAction(otrosApplication, Direction.BACKWARD));
     prevMarked.setToolTipText(prevMarked.getText());
     prevMarked.setText("");
     prevMarked.setMnemonic(KeyEvent.VK_R);
-    enableDisableComponetsForTabs.addComponet(prevMarked);
+    enableDisableComponetsForTabs.addComponent(prevMarked);
     toolBar.add(prevMarked);
-    enableDisableComponetsForTabs.addComponet(toolBar.add(new SearchByLevel(otrosApplication, 1, Level.INFO)));
-    enableDisableComponetsForTabs.addComponet(toolBar.add(new SearchByLevel(otrosApplication, 1, Level.WARNING)));
-    enableDisableComponetsForTabs.addComponet(toolBar.add(new SearchByLevel(otrosApplication, 1, Level.SEVERE)));
-    enableDisableComponetsForTabs.addComponet(toolBar.add(new SearchByLevel(otrosApplication, -1, Level.INFO)));
-    enableDisableComponetsForTabs.addComponet(toolBar.add(new SearchByLevel(otrosApplication, -1, Level.WARNING)));
-    enableDisableComponetsForTabs.addComponet(toolBar.add(new SearchByLevel(otrosApplication, -1, Level.SEVERE)));
+    enableDisableComponetsForTabs.addComponent(toolBar.add(new SearchByLevel(otrosApplication, 1, Level.INFO)))
+      .setName("MainFrame.NextInfo");
+    enableDisableComponetsForTabs.addComponent(toolBar.add(new SearchByLevel(otrosApplication, 1, Level.WARNING)))
+      .setName("MainFrame.NextWarning");;
+    enableDisableComponetsForTabs.addComponent(toolBar.add(new SearchByLevel(otrosApplication, 1, Level.SEVERE)))
+      .setName("MainFrame.NextSevere");
+    enableDisableComponetsForTabs.addComponent(toolBar.add(new SearchByLevel(otrosApplication, -1, Level.INFO)))
+      .setName("MainFrame.PreviousInfo");
+    enableDisableComponetsForTabs.addComponent(toolBar.add(new SearchByLevel(otrosApplication, -1, Level.WARNING)))
+      .setName("MainFrame.PreviousWarning");
+    enableDisableComponetsForTabs.addComponent(toolBar.add(new SearchByLevel(otrosApplication, -1, Level.SEVERE)))
+      .setName("MainFrame.PreviousSevere");
   }
 
   private void initMenu() {
@@ -700,7 +708,7 @@ public class LogViewMainFrame extends JFrame {
     fileMenu.add(labelLogInvestigation);
     fileMenu.add(new OpenLogInvestigationAction(otrosApplication));
     JMenuItem saveLogsInvest = new JMenuItem(new SaveLogInvestigationAction(otrosApplication));
-    enableDisableComponetsForTabs.addComponet(saveLogsInvest);
+    enableDisableComponetsForTabs.addComponent(saveLogsInvest);
     fileMenu.add(saveLogsInvest);
     fileMenu.add(new JSeparator());
     JMenuItem exitMenuItem = new JMenuItem("Exit", 'e');
@@ -714,7 +722,7 @@ public class LogViewMainFrame extends JFrame {
     JMenu toolsMenu = new JMenu("Tools");
     toolsMenu.setMnemonic(KeyEvent.VK_T);
     JMenuItem closeAll = new JMenuItem(new CloseAllTabsAction(otrosApplication));
-    enableDisableComponetsForTabs.addComponet(closeAll);
+    enableDisableComponetsForTabs.addComponent(closeAll);
     ArrayList<SocketLogReader> logReaders = new ArrayList<>();
     toolsMenu.add(new JMenuItem(new StartSocketListener(otrosApplication, logReaders)));
     toolsMenu.add(new JMenuItem(new StopAllSocketListeners(otrosApplication, logReaders)));
